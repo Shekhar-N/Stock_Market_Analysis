@@ -1,59 +1,59 @@
-📈 Stock Market Near Real-Time Analysis using PySpark
-📌 Project Overview
+# 📈 Stock Market Near Real-Time Analysis using PySpark
 
-This project implements a near real-time stock market analytics pipeline using PySpark Structured Streaming and open-source tools only.
+### 📌 Project Overview
+This project implements a **near real-time stock market analytics pipeline** using **PySpark Structured Streaming** and open-source tools only.
 
-Due to the lack of free true real-time stock exchange feeds, the system uses near real-time data ingestion and a file-based streaming architecture to simulate a real-world streaming pipeline. This approach is widely accepted for learning and academic projects.
+Due to the lack of free true real-time stock exchange feeds, the system uses **near real-time data ingestion** and a **file-based streaming architecture** to simulate a real-world streaming pipeline. This approach is widely accepted for learning and academic projects.
 
-The pipeline continuously ingests stock price data, processes it using Spark streaming, computes technical indicators, stores results in a columnar format, and visualizes trends on an interactive dashboard.
+### 🚀 Pipeline Functionality
+The pipeline is designed to handle the following tasks:
+* **Continuous Ingestion:** Monitors and ingests stock price data as it arrives.
+* **Spark Processing:** Utilizes Spark Structured Streaming for data transformation.
+* **Technical Indicators:** Computes key financial metrics and indicators on the fly.
+* **Columnar Storage:** Stores processed results in a columnar format (e.g., Parquet) for efficient querying.
+* **Visualization:** Displays trends and analysis on an interactive dashboard.
 
-🎯 Objectives
+## 🎯 Objectives
 
-Build a complete end-to-end data pipeline
+* **Build a complete end-to-end data pipeline:** Develop a seamless flow from data ingestion to visualization.
+* **Learn Structured Streaming concepts in Spark:** Master the fundamentals of real-time data processing using PySpark.
+* **Perform window-based aggregations:** Implement complex temporal calculations and rolling averages on streaming data.
+* **Store analytics data efficiently using Parquet:** Utilize columnar storage formats to optimize disk space and query performance.
+* **Visualize near real-time trends using Streamlit:** Create an interactive, Python-based dashboard for data storytelling.
+* **Design a project that is resume and interview ready:** Focus on industry-standard tools and architectural patterns.
 
-Learn Structured Streaming concepts in Spark
+## 🏗️ Architecture
 
-Perform window-based aggregations
+The pipeline follows a decoupled architecture, moving data from ingestion to visualization through the following stages:
 
-Store analytics data efficiently using Parquet
+1. **Stock Data Source:** Fetches data via Yahoo Finance (Free API).
+2. **Python Ingestion Service:** Scripts to pull and format the raw data.
+3. **File-based Streaming:** Raw JSON events act as the landing zone for the stream.
+4. **PySpark Structured Streaming:** The core processing engine for transformations.
+5. **Parquet Storage:** Efficient, columnar storage for processed analytics.
+6. **Streamlit Dashboard:** The presentation layer for interactive visualization.
 
-Visualize near real-time trends using Streamlit
+#### Why file-based streaming?
 
-Design a project that is resume and interview ready
+* **Free and simple to set up:** Eliminates the need for expensive cloud infrastructure or complex messaging brokers like Kafka or Kinesis.
+* **Supported natively by Spark:** PySpark includes built-in support for monitoring directories and processing new files as they arrive.
+* **Mimics Kafka-style micro-batches:** By dropping files into a folder, you can simulate how a message queue triggers micro-batch processing.
+* **Ideal for learning streaming fundamentals:** Allows you to focus on core concepts like windowing and watermarking without the overhead of managing a distributed cluster.
 
-🏗️ Architecture
-Stock Data Source (Yahoo Finance - Free)
-        ↓
-Python Ingestion Service
-        ↓
-File-based Streaming (JSON events)
-        ↓
-PySpark Structured Streaming
-        ↓
-Parquet Storage
-        ↓
-Streamlit Dashboard
+## 🧰 Tech Stack
 
-Why file-based streaming?
+| Layer | Technology |
+| :--- | :--- |
+| **Language** | Python |
+| **Streaming Engine** | PySpark (Structured Streaming) |
+| **Data Source** | Yahoo Finance (near real-time) |
+| **Storage** | Parquet |
+| **Visualization** | Streamlit |
+| **Environment** | Local (no cloud, no paid APIs) |
 
-Free and simple to set up
+## 📂 Project Structure
 
-Supported natively by Spark
-
-Mimics Kafka-style micro-batches
-
-Ideal for learning streaming fundamentals
-
-🧰 Tech Stack
-Layer	Technology
-Language	Python
-Streaming Engine	PySpark (Structured Streaming)
-Data Source	Yahoo Finance (near real-time)
-Storage	Parquet
-Visualization	Streamlit
-Environment	Local (no cloud, no paid APIs)
-
-📂 Project Structure
+```text
 stock-market-analysis/
 ├── ingestion/        # Data collection
 ├── streaming/        # Spark streaming logic
@@ -64,96 +64,104 @@ stock-market-analysis/
 ├── utils/            # Helpers (logging, time)
 ├── data/             # Raw, processed & checkpoints
 └── scripts/          # Run scripts
+```
+
+## 🔄 Data Flow Explained
+
+### 1. Ingestion
+* **Source:** A Python script fetches near real-time stock prices from the Yahoo Finance API.
+* **Format:** Each price update is serialized and written to the landing directory as an individual **JSON event**.
+
+### 2. Streaming Processing
+* **Read:** PySpark Structured Streaming monitors the landing directory and reads new JSON files as they arrive.
+* **Parse:** The `event_time` is extracted and cast to a timestamp for time-series analysis.
+* **Transform:** Windowed aggregations (e.g., **5-minute moving averages**) are computed over the stream to smooth out price volatility.
+
+### 3. Storage
+* **Sink:** Aggregated results are written to disk in **Parquet format**.
+* **Optimization:** Using Parquet enables efficient columnar querying, which significantly speeds up the visualization layer.
+
+### 4. Visualization
+* **Dashboard:** Streamlit monitors the processed Parquet files.
+* **Output:** Interactive line charts are rendered to show near real-time price trends and technical indicators.
 
 
-This structure follows industry-style separation of concerns.
+## 📊 Analytics Implemented
 
-🔄 Data Flow Explained
+The core logic of this pipeline focuses on time-series analysis and stateful streaming:
 
-Ingestion
+* **5-minute windowed moving average:** Calculates the average stock price over a rolling 5-minute interval to smooth out noise and identify short-term trends.
+* **Symbol-wise aggregation:** Groups incoming data by the stock ticker (symbol), allowing the pipeline to handle multiple stocks simultaneously.
+* **Event-time based processing:** Processes data based on when the trade actually occurred (*Event Time*), rather than when the data reached the Spark cluster (*Processing Time*).
+    * Ensures accuracy in the case of delayed data or out-of-order events.
+ 
+## ▶ How to Run the Project
 
-Python script fetches near real-time stock prices
+Follow these steps in order to initialize the environment and start the pipeline.
 
-Each price update is written as a JSON event
+### 1️⃣ Create and Activate Virtual Environment
 
-Streaming Processing
-
-Spark Structured Streaming reads JSON files
-
-Event time is extracted and parsed
-
-Windowed aggregations (5-minute moving average) are computed
-
-Storage
-
-Aggregated results are written in Parquet format
-
-Enables efficient querying and visualization
-
-Visualization
-
-Streamlit reads processed Parquet files
-
-Interactive line charts show price trends
-
-📊 Analytics Implemented
-
-5-minute windowed moving average of stock prices
-
-Symbol-wise aggregation
-
-Event-time based processing (not processing-time)
-
-▶ How to Run the Project
-1️⃣ Create and activate virtual environment
+```bash
+# Create the environment
 python -m venv venv
-source venv/bin/activate   # Linux / WSL
-# OR
-venv\Scripts\Activate.ps1  # Windows
 
-2️⃣ Install dependencies
+# Activate (Linux / WSL)
+source venv/bin/activate
+
+# Activate (Windows)
+.\venv\Scripts\Activate.ps1
+```
+
+### 2️⃣ Install dependencies
+
+```bash
 pip install -r requirements.txt
+```
 
-3️⃣ Start data ingestion
+### 3️⃣ Start data ingestion
+
+```bash
 python ingestion/stock_data_collector.py
+```
 
-4️⃣ Start Spark streaming (new terminal)
+### 4️⃣ Start Spark streaming (new terminal)
+
+```bash
 spark-submit streaming/stock_stream_processor.py
+```
 
-5️⃣ Start visualization dashboard (new terminal)
+### 5️⃣ Start visualization dashboard (new terminal)
+
+```bash
 streamlit run visualization/streamlit_app.py
-
+```
 
 Open in browser:
 
+```arduino
 http://localhost:8501
+```
 
-⚠ Limitations
+## ⚠ Limitations
 
-Uses near real-time data (not tick-level exchange data)
-
-File-based streaming instead of Kafka
-
-Designed for learning and local execution
+* Uses near real-time data (not tick-level exchange data)
+* File-based streaming instead of Kafka
+* Designed for learning and local execution
 
 These trade-offs were made intentionally to keep the project free, transparent, and educational.
 
-🚀 Future Enhancements
+## 🚀 Future Enhancements
 
-Add more indicators (EMA, RSI, Bollinger Bands)
+* Add more indicators (EMA, RSI, Bollinger Bands)
 
-Integrate Kafka for real message streaming
+* Integrate Kafka for real message streaming
 
-Add alerting for price spikes
+* Add alerting for price spikes
 
-Containerize using Docker
+* Containerize using Docker
 
-Deploy dashboard to cloud
+* Deploy dashboard to cloud
 
-💬 How to Explain This Project in Interviews
+## 🧑‍🎓 Author Notes
 
-“I built a near real-time stock market analytics pipeline using PySpark Structured Streaming. Since free real-time exchange feeds are restricted, I designed a file-based streaming ingestion system that simulates real streaming behavior. Spark processes the data using event-time windows, stores results in Parquet, and the trends are visualized using Streamlit.”
-
-🧑‍🎓 Author Notes
-
-This project was built independently for learning purposes, focusing on core data engineering concepts rather than paid tools or managed services.
+This project was built **independently for learning purposes**, focusing on core data engineering concepts rather than paid tools or managed services.
