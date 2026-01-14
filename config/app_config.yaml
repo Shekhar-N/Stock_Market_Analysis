@@ -1,0 +1,11 @@
+stocks:
+  - AAPL
+  - MSFT
+  - GOOGL
+
+refresh_interval: 60
+
+paths:
+  raw: data/raw/stock_stream
+  processed: data/processed/indicators
+  checkpoints: data/checkpoints
